@@ -7,8 +7,8 @@
 * **Runtime :** Java 21 (LTS)
 * **Framework :** Spring Boot **
 * **Persistance :** Spring Data JPA / Hibernate
-* **Base de données :** H2 (In-memory pour le dev) / MySQL (Cible démonstration)
-* **Tests :** JUnit 5, AssertJ
+* **Base de données :** PostgreSQL
+* **Tests :** JUnit 5
 
 ## Fonctionnalités (MVP)
 1.  **Endpoint d'Ingestion :** API REST acceptant des payloads JSON complexes.
