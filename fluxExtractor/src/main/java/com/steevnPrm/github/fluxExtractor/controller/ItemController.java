@@ -20,10 +20,17 @@ public class ItemController {
         return itemService.getAllItems();
     }
 
-    @PostMapping
-    public String create(@RequestParam(required = false) Integer value, 
-                         @RequestParam(required = false) String description) {
-        itemService.createIem(value, description);
-        return "Item créé avec succès (vérifie ta DB Postgres !)";
-    }
+    @PostMapping("/batch-test")
+        public String launchBatchTest() {
+            List<ItemEntity> testList = new java.util.ArrayList<>();
+            for (int i = 0; i < 1000; i++) {
+                if (i % 10 == 0) {
+                    testList.add(itemService.createItem(-100, "VALEUR NÉGATIVE TEST")); // Forcer l'algo à créer un objet lors de cas limite
+                } else {
+                    testList.add(itemService.createItem(i, "Item valide " + i));
+                }
+            }
+            itemService.processFilterAndSave(testList);
+            return "Processus de tri terminé !";
+        }
 }
