@@ -1,28 +1,33 @@
 package com.steevnPrm.github.fluxExtractor.service;
 
 import java.util.ArrayList;
-import java.util.List; 
-import com.steevnPrm.github.fluxExtractor.entity.ItemEntity;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.springframework.stereotype.Service;
+import com.steevnPrm.github.fluxExtractor.entity.ItemEntity;
 
 @Service
-public class ItemGenerator { 
+public class ItemGenerator {
 
-    private final ItemService iService;
+    public List<ItemEntity> execute() {
+        List<ItemEntity> items = new ArrayList<>();
+        ThreadLocalRandom random = ThreadLocalRandom.current();
 
-    public ItemGenerator(ItemService iService) {
-        this.iService = iService;
-    }
-    
-    public void runThousandItems() { 
-        List<ItemEntity> myList = new ArrayList<>();
-        
-        for(int i = 0; i < 1000; i++) {
-           
-            ItemEntity nouvelItem = iService.createItem(i, "Item numéro " + i);
-            myList.add(nouvelItem);
+        for (int i = 0; i < 1000; i++) {
+            ItemEntity item = new ItemEntity();
+            
+            item.setValue(random.nextInt(0, 501));
+
+            if (random.nextDouble() > 0.15) {
+                item.setDescription("Produit organique type-" + random.nextInt(1, 50));
+            } else {
+                item.setDescription(null);
+            }
+            
+            items.add(item);
         }
-    
-        iService.processFilterAndSave(myList);
+
+        return items;
     }
 }

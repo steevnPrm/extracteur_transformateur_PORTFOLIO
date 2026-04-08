@@ -1,36 +1,34 @@
 package com.steevnPrm.github.fluxExtractor.controller;
 
-import java.util.List;
-import com.steevnPrm.github.fluxExtractor.entity.ItemEntity;
-import com.steevnPrm.github.fluxExtractor.service.ItemService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.steevnPrm.github.fluxExtractor.service.ItemOrchestrator;
 
 @RestController
 @RequestMapping("/api/items")
 public class ItemController {
 
-    private final ItemService itemService;
+    private final ItemOrchestrator orchestrator;
 
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
+    // Injection par constructeur : la meilleure pratique
+    public ItemController(ItemOrchestrator orchestrator) {
+        this.orchestrator = orchestrator;
     }
 
-    @GetMapping
-    public List<ItemEntity> getAll() {
-        return itemService.getAllItems();
-    }
-
-    @PostMapping("/batch-test")
-        public String launchBatchTest() {
-            List<ItemEntity> testList = new java.util.ArrayList<>();
-            for (int i = 0; i < 1000; i++) {
-                if (i % 10 == 0) {
-                    testList.add(itemService.createItem(-100, "VALEUR NÉGATIVE TEST")); // Forcer l'algo à créer un objet lors de cas limite
-                } else {
-                    testList.add(itemService.createItem(i, "Item valide " + i));
-                }
+    /**
+     * Déclenche le flux ETL complet.
+     * Route : POST http://localhost:8080/api/items/run
+     */
+    @PostMapping("/run")
+        public ResponseEntity<String> runEtlProcess() {
+            try {
+                long duration = orchestrator.execute();
+                return ResponseEntity.ok("ETL terminé avec succès en " + duration + " ms.");
+            } catch (Exception e) {
+                return ResponseEntity.internalServerError().body("Erreur : " + e.getMessage());
             }
-            itemService.processFilterAndSave(testList);
-            return "Processus de tri terminé !";
         }
 }
