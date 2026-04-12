@@ -45,6 +45,5 @@ public class ItemController {
     }
   }
 
-  // Petit DTO pour une réponse JSON structurée dans Swagger
   record ProcessResponse(String status, String message, long durationMs) {}
 }
